@@ -1,81 +1,68 @@
-package com.gestaohabitos.controller;
+package com.gestaometas.controller;
 
-import com.gestaohabitos.model.Meta;
+import com.gestaometas.model.Meta;
+import com.gestaometas.service.MetaService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
 @RequestMapping("/api/metas")
+@Tag(name = "Metas", description = "Operações para gerenciamento de metas")
 public class MetaController {
     
-    private final List<Meta> metas = new ArrayList<>();
-    private final AtomicLong counter = new AtomicLong(1);
-
+    @Autowired
+    private MetaService metaService;
+    
     @GetMapping
-    public List<Meta> getAllMetas() {
-        return metas;
+    @Operation(summary = "Listar todas as metas")
+    public ResponseEntity<List<Meta>> listarTodas() {
+        return ResponseEntity.ok(metaService.getAllMetas());
     }
-
+    
     @GetMapping("/{id}")
-    public Meta getMetaById(@PathVariable Long id) {
-        return metas.stream()
-                .filter(m -> m.getId().equals(id))
-                .findFirst()
-                .orElse(null);
+    @Operation(summary = "Buscar meta por ID")
+    public ResponseEntity<Meta> buscarPorId(@PathVariable Long id) {
+        return metaService.getMetaById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
-
+    
     @PostMapping
-    public Meta createMeta(@RequestBody Meta meta) {
-        meta.setId(counter.getAndIncrement());
-        metas.add(meta);
-        return meta;
+    @Operation(summary = "Criar nova meta")
+    public ResponseEntity<Meta> criar(@RequestBody Meta meta) {
+        return ResponseEntity.ok(metaService.createMeta(meta));
     }
-
+    
     @PutMapping("/{id}")
-    public Meta updateMeta(@PathVariable Long id, @RequestBody Meta metaAtualizada) {
-        for (int i = 0; i < metas.size(); i++) {
-            Meta meta = metas.get(i);
-            if (meta.getId().equals(id)) {
-                metaAtualizada.setId(id);
-                metas.set(i, metaAtualizada);
-                return metaAtualizada;
-            }
-        }
-        return null;
+    @Operation(summary = "Atualizar meta")
+    public ResponseEntity<Meta> atualizar(@PathVariable Long id, @RequestBody Meta meta) {
+        return metaService.updateMeta(id, meta)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
-
+    
     @DeleteMapping("/{id}")
-    public String deleteMeta(@PathVariable Long id) {
-        boolean removed = metas.removeIf(m -> m.getId().equals(id));
-        return removed ? "Meta excluída com sucesso" : "Meta não encontrada";
+    @Operation(summary = "Excluir meta")
+    public ResponseEntity<Void> excluir(@PathVariable Long id) {
+        if (metaService.deleteMeta(id)) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
     }
-
+    
     @PatchMapping("/{id}/progresso")
-    public Meta atualizarProgresso(@PathVariable Long id, @RequestParam int progresso) {
-        Meta meta = getMetaById(id);
-        if (meta != null) {
-            meta.setProgresso(progresso);
-        }
-        return meta;
-    }
-
-    @GetMapping("/{id}/status")
-    public String getStatus(@PathVariable Long id) {
-        Meta meta = getMetaById(id);
-        if (meta == null) {
-            return "Meta não encontrada";
-        }
+    @Operation(summary = "Atualizar progresso da meta")
+    public ResponseEntity<Meta> atualizarProgresso(
+            @PathVariable Long id,
+            @RequestParam int progresso) {
         
-        String status = meta.isConcluida() ? "CONCLUÍDA" : "EM ANDAMENTO";
-        if (meta.estaVencida()) {
-            status = "VENCIDA";
-        }
-        
-        return String.format("Status: %s | Progresso: %d%% | Dias restantes: %d", 
-                           status, meta.getProgresso(), meta.diasRestantes());
+        return metaService.atualizarProgresso(id, progresso)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }
