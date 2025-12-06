@@ -1,81 +1,70 @@
-package com.gestaohabitos.controller;
+package com.gestaometas.controller;
 
-import com.gestaohabitos.model.Habit;
+import com.gestaometas.model.Habito;
+import com.gestaometas.service.HabitoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
-@RequestMapping("/api/habits")
-public class HabitController {
+@RequestMapping("/api/habitos")
+@Tag(name = "Hábitos", description = "Operações para gerenciamento de hábitos")
+public class HabitoController {
     
-    private final List<Habit> habits = new ArrayList<>();
-    private final AtomicLong counter = new AtomicLong(1);
-
+    @Autowired
+    private HabitoService habitoService;
+    
     @GetMapping
-    public List<Habit> getAllHabits() {
-        return habits;
+    @Operation(summary = "Listar todos os hábitos")
+    public ResponseEntity<List<Habito>> listarTodos() {
+        return ResponseEntity.ok(habitoService.getAllHabitos());
     }
-
+    
     @GetMapping("/{id}")
-    public Habit getHabitById(@PathVariable Long id) {
-        return habits.stream()
-                .filter(h -> h.getId().equals(id))
-                .findFirst()
-                .orElse(null);
+    @Operation(summary = "Buscar hábito por ID")
+    public ResponseEntity<Habito> buscarPorId(@PathVariable Long id) {
+        return habitoService.getHabitoById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
-
+    
     @PostMapping
-    public Habit createHabit(@RequestBody Habit habit) {
-        habit.setId(counter.getAndIncrement());
-        habits.add(habit);
-        return habit;
+    @Operation(summary = "Criar novo hábito")
+    public ResponseEntity<Habito> criar(@RequestBody Habito habito) {
+        return ResponseEntity.ok(habitoService.createHabito(habito));
     }
-
+    
     @PutMapping("/{id}")
-    public Habit updateHabit(@PathVariable Long id, @RequestBody Habit habitAtualizado) {
-        for (int i = 0; i < habits.size(); i++) {
-            Habit habit = habits.get(i);
-            if (habit.getId().equals(id)) {
-                habitAtualizado.setId(id);
-                habits.set(i, habitAtualizado);
-                return habitAtualizado;
-            }
-        }
-        return null;
+    @Operation(summary = "Atualizar hábito")
+    public ResponseEntity<Habito> atualizar(@PathVariable Long id, @RequestBody Habito habito) {
+        return habitoService.updateHabito(id, habito)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
-
+    
     @DeleteMapping("/{id}")
-    public String deleteHabit(@PathVariable Long id) {
-        boolean removed = habits.removeIf(h -> h.getId().equals(id));
-        return removed ? "Hábito excluído com sucesso" : "Hábito não encontrado";
+    @Operation(summary = "Excluir hábito")
+    public ResponseEntity<Void> excluir(@PathVariable Long id) {
+        if (habitoService.deleteHabito(id)) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
     }
-
+    
     @PostMapping("/{id}/registrar")
-    public Habit registrarDia(@PathVariable Long id, 
-                             @RequestParam LocalDate data,
-                             @RequestParam boolean realizado) {
-        Habit habit = getHabitById(id);
-        if (habit != null) {
-            habit.registrarDia(data, realizado);
-        }
-        return habit;
-    }
-
-    @GetMapping("/{id}/estatisticas")
-    public String getEstatisticas(@PathVariable Long id) {
-        Habit habit = getHabitById(id);
-        if (habit == null) {
-            return "Hábito não encontrado";
-        }
+    @Operation(summary = "Registrar dia do hábito")
+    public ResponseEntity<Habito> registrarDia(
+            @PathVariable Long id,
+            @RequestParam LocalDate data,
+            @RequestParam boolean realizado) {
         
-        double taxaSucesso = habit.calcularTaxaSucesso();
-        int streak = habit.calcularStreakAtual();
-        
-        return String.format("Taxa de Sucesso: %.2f%% | Streak Atual: %d dias", taxaSucesso, streak);
+        return habitoService.registrarDia(id, data, realizado)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }
