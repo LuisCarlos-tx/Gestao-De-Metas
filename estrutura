@@ -1,31 +1,26 @@
-gestao-habitos-api/
+Gestao-De-Metas/
 ├── src/
-│   └── main/m
-│       ├── java/
-│       │   └── com/
-│       │       └── gestaohabitos/
-│       │           ├── config/
-│       │           │   └── SwaggerConfig.java
-│       │           ├── controller/
-│       │           │   ├── HabitController.java
-│       │           │   └── MetaController.java
-│       │           ├── model/
-│       │           │   ├── Habit.java
-│       │           │   └── Meta.java
-│       │           ├── repository/
-│       │           │   ├── HabitRepository.java
-│       │           │   └── MetaRepository.java
-│       │           ├── service/
-│       │           │   ├── HabitService.java
-│       │           │   └── MetaService.java
-│       │           ├── dto/
-│       │           │   ├── HabitRequest.java
-│       │           │   ├── HabitResponse.java
-│       │           │   ├── MetaRequest.java
-│       │           │   └── MetaResponse.java
-│       │           └── GestaoHabitosApplication.java
-│       └── resources/
-│           └── application.properties
-├── pom.xml
-├── README.md
-└── .gitignore
+│   ├── main/
+│   │   ├── java/
+│   │   │   └── com/
+│   │   │       └── gestaometas/
+│   │   │           ├── GestaoMetasApplication.java
+│   │   │           ├── controller/
+│   │   │           │   ├── HabitoController.java
+│   │   │           │   └── MetaController.java
+│   │   │           ├── model/
+│   │   │           │   ├── Habito.java
+│   │   │           │   └── Meta.java
+│   │   │           ├── service/
+│   │   │           │   ├── HabitoService.java
+│   │   │           │   └── MetaService.java
+│   │   │           └── repository/
+│   │   │               ├── HabitoRepository.java
+│   │   │               └── MetaRepository.java
+│   │   └── resources/
+│   │       └── application.properties
+│   └── test/
+│       └── java/
+│           └── com/
+│               └── gestaometas/
+└── pom.xml
