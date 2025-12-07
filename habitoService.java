@@ -4,7 +4,6 @@ import com.gestaometas.model.Habito;
 import com.gestaometas.repository.HabitoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
