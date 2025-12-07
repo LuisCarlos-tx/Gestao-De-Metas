@@ -4,7 +4,6 @@ import com.gestaometas.model.Meta;
 import com.gestaometas.repository.MetaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -30,19 +29,12 @@ public class MetaService {
         return metaRepository.findById(id).map(meta -> {
             meta.setTitulo(metaAtualizada.getTitulo());
             meta.setDescricao(metaAtualizada.getDescricao());
-            meta.setDataFim(metaAtualizada.getDataFim());
+            meta.setDataLimite(metaAtualizada.getDataLimite());
             return metaRepository.save(meta);
         });
     }
     
     public boolean deleteMeta(Long id) {
         return metaRepository.deleteById(id);
-    }
-    
-    public Optional<Meta> atualizarProgresso(Long id, int progresso) {
-        return metaRepository.findById(id).map(meta -> {
-            meta.setProgresso(progresso);
-            return metaRepository.save(meta);
-        });
     }
 }
