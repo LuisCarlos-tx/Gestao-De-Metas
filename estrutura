@@ -1,26 +1,23 @@
 Gestao-De-Metas/
-├── src/
-│   ├── main/
-│   │   ├── java/
-│   │   │   └── com/
-│   │   │       └── gestaometas/
-│   │   │           ├── GestaoMetasApplication.java
-│   │   │           ├── controller/
-│   │   │           │   ├── HabitoController.java
-│   │   │           │   └── MetaController.java
-│   │   │           ├── model/
-│   │   │           │   ├── Habito.java
-│   │   │           │   └── Meta.java
-│   │   │           ├── service/
-│   │   │           │   ├── HabitoService.java
-│   │   │           │   └── MetaService.java
-│   │   │           └── repository/
-│   │   │               ├── HabitoRepository.java
-│   │   │               └── MetaRepository.java
-│   │   └── resources/
-│   │       └── application.properties
-│   └── test/
-│       └── java/
-│           └── com/
-│               └── gestaometas/
-└── pom.xml
+ ├── pom.xml
+ └── src/
+     └── main/
+         ├── java/
+         │   └── com/luiscarlos/gestaometas/
+         │       ├── GestaoMetasApplication.java
+         │       ├── model/
+         │       │   ├── Meta.java
+         │       │   └── Habito.java
+         │       ├── repository/
+         │       │   ├── MetaRepository.java
+         │       │   └── HabitoRepository.java
+         │       ├── service/
+         │       │   ├── MetaService.java
+         │       │   └── HabitoService.java
+         │       └── controller/
+         │           ├── MetaController.java
+         │           └── HabitoController.java
+         └── resources/
+             ├── application.properties
+             └── static/ 
+
